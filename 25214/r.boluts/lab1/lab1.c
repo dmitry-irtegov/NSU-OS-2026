@@ -50,23 +50,26 @@ int main(int argc, char *argv[]) {
     for (int index = cnt - 1; index >= 0; index--) {
         int c = all_options[index].letter;
         switch (c) {
-            case 'i':
+            case 'i': {
                 printf("User's real ID: %lu\n", (unsigned long) getuid());
                 printf("User's effective ID: %lu\n", (unsigned long) geteuid());
                 printf("Group's real ID: %lu\n", (unsigned long) getgid());
                 printf("Group's effective ID: %lu\n", (unsigned long) getegid());
                 break;
-            case 's':
+            }
+            case 's': {
                 if (setpgid(getpid(), getpid()) == -1) {
                     perror("setpgid");
                 }
                 break;
-            case 'p':
+            }
+            case 'p': {
                 printf("Process's ID: %lu\n", (unsigned long) getpid());
                 printf("Process parent's ID: %lu\n", (unsigned long) getppid());
                 printf("Process group's ID: %lu\n", (unsigned long) getpgrp());
                 break;
-            case 'u':
+            }
+            case 'u': {
                 long cur_ulimit = ulimit(UL_GETFSIZE);
                 if (cur_ulimit == -1) {
                     perror("ulimit_get");
@@ -74,7 +77,8 @@ int main(int argc, char *argv[]) {
                     printf("Current value of ulimit: %ld\n", cur_ulimit);
                 }
                 break;
-            case 'U':
+            }
+            case 'U': {
                 char* endptr_u;
                 errno = 0;
                 long new_ulimit = strtol(all_options[index].argument, &endptr_u, 10);
@@ -88,7 +92,8 @@ int main(int argc, char *argv[]) {
                     }
                 }
                 break;
-            case 'c':
+            }
+            case 'c': {
                 struct rlimit cur_rlimit; 
                 if (getrlimit(RLIMIT_CORE, &cur_rlimit) == -1) {
                     perror("getrlimit");
@@ -96,7 +101,8 @@ int main(int argc, char *argv[]) {
                     printf("Current core file size limit: %lu\n", (unsigned long) cur_rlimit.rlim_cur);
                 }
                 break;
-            case 'C':
+            }
+            case 'C': {
                 char* endptr_c;
                 errno = 0;
                 long new_size = strtol(all_options[index].argument, &endptr_c, 10);
@@ -116,7 +122,8 @@ int main(int argc, char *argv[]) {
                     }
                 }
                 break;
-            case 'd':
+            }
+            case 'd': {
                 char current_path[256];
                 if (getcwd(current_path, sizeof(current_path)) != NULL) {
                     printf("Current working directory: %s\n", current_path);
@@ -124,14 +131,16 @@ int main(int argc, char *argv[]) {
                     perror("getcwd");
                 }
                 break;
-            case 'v':
+            }
+            case 'v': {
                 int ind_env = 0;
                 while (environ[ind_env] != NULL) {
                     printf("%s\n", environ[ind_env]);
                     ind_env++;
                 }
                 break;
-            case 'V':
+            }
+            case 'V': {
                 char *equal = strchr(all_options[index].argument, '=');
                 if (equal != NULL) {
                     *equal = '\0';
@@ -144,14 +153,18 @@ int main(int argc, char *argv[]) {
                     printf("option V must have an argument in the form name=value\n");
                 }
                 break;
-            case '?':
+            }
+            case '?': {
                 printf("invalid option is %c\n", all_options[index].invalid_option);
                 break;
-            case ':':
+            }
+            case ':': {
                 printf("option %c must have a mandatory argument.\n", all_options[index].invalid_option);
                 break;
-            default:
+            }
+            default: {
                 break;
+            }
         }
     }
 }
