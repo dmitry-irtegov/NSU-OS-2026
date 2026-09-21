@@ -8,8 +8,6 @@ extern char** environ;
 
 int main(int argc, char* argv[])
 {
-    printf("%s", environ[1]);
-    
     setenv("TZ", "America/Los_Angeles", 1);
     tzset();
     
