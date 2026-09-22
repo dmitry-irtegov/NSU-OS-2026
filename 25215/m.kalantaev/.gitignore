@@ -1,0 +1,4 @@
+ex_time
+*.dSYM/
+.DS_Store
+.vscode/
