@@ -23,7 +23,7 @@ int main(void) {
 	uid_t real_uid = getuid();
 	uid_t effect_uid = geteuid();
 
-	printf("Real UID: %lu; Effective UID: %lu\n", (long)real_uid, (long)effect_uid);
+	printf("Real UID: %ld; Effective UID: %ld\n", (long)real_uid, (long)effect_uid);
 
 	try_open_file();
 
@@ -35,7 +35,7 @@ int main(void) {
 	real_uid = getuid();
         effect_uid = geteuid();
 
-	printf("Real UID: %lu; Effective UID: %lu\n", (long)real_uid, (long)effect_uid);
+	printf("Real UID: %ld; Effective UID: %ld\n", (long)real_uid, (long)effect_uid);
 	
 	try_open_file();
 
