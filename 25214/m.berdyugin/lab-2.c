@@ -5,7 +5,7 @@
 
 #define PST_OFFSET (8 * 60 * 60)
 
-extern char *tzname[];
+// extern char *tzname[];
 
 
 int main()
@@ -29,7 +29,7 @@ int main()
     //Время в California
     cal_time = now - PST_OFFSET;
     sp = gmtime(&cal_time);
-    printf("%d/%d/%02d %d:%02d %s\n",
+    printf("%d/%d/%02d %d:%02d PST\n",
         sp->tm_mon + 1, sp->tm_mday,
         sp->tm_year, sp->tm_hour,
         sp->tm_min);
