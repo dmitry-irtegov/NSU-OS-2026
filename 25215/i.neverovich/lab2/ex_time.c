@@ -5,18 +5,23 @@
 
 extern char *tzname[];
 
-#define TIME_ZONE "PST8PDT"
-
-main()
+int main(int argc, char *argv[])
 {
     time_t now;
     struct tm *sp;
+    const char *zone;
+
+    if (argc < 2) {
+        zone = "America/Los-Angeles";
+    } else {
+        zone = argv[1];
+    }
 
     (void) time(&now);
 
     printf("%s", ctime(&now));
 
-    setenv("TZ", TIME_ZONE, 1);
+    setenv("TZ", zone, 1);
     tzset();
 
     sp = localtime(&now);
