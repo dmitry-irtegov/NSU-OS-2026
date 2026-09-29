@@ -6,7 +6,7 @@
 int main(void) {
 
     time_t now;
-    
+
     if (setenv("TZ", "PST8PDT", 1) != 0) {
         perror("Error with setting TZ");
         return 1;
