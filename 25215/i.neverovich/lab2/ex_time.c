@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     const char *zone;
 
     if (argc < 2) {
-        zone = "America/Los-Angeles";
+        zone = "America/Los_Angeles";
     } else {
         zone = argv[1];
     }
