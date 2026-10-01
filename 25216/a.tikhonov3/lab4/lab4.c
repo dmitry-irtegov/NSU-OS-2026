@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SIZE 1024
-
 struct Node {
     char *str;
     struct Node *next;
@@ -11,27 +9,55 @@ struct Node {
 
 int main(void)
 {
-    char buffer[SIZE];
     struct Node *head = NULL;
     struct Node *tail = NULL;
 
     while (1) {
-        fgets(buffer, SIZE, stdin);
+        int size = 16;
+        int len = 0;
 
-        if (buffer[0] == '.')
+        char *buffer = malloc(size);
+
+        if (buffer == NULL)
+            return 1;
+
+        while (1) {
+            char *result = fgets(buffer + len, size - len, stdin);
+
+            if (result == NULL) {
+                free(buffer);
+                return 1;
+            }
+
+            len = strlen(buffer);
+
+            if (buffer[len - 1] == '\n')
+                break;
+
+            char *temp = realloc(buffer, size * 2);
+
+            if (temp == NULL) {
+                free(buffer);
+                return 1;
+            }
+
+            buffer = temp;
+            size *= 2;
+        }
+
+        if (buffer[0] == '.') {
+            free(buffer);
             break;
-
-        int len = strlen(buffer);
+        }
 
         struct Node *new_node = malloc(sizeof(struct Node));
-        if (new_node == NULL)
-            return 1;
 
-        new_node->str = malloc(len + 1);
-        if (new_node->str == NULL)
+        if (new_node == NULL) {
+            free(buffer);
             return 1;
+        }
 
-        strcpy(new_node->str, buffer);
+        new_node->str = buffer;
         new_node->next = NULL;
 
         if (head == NULL) {
