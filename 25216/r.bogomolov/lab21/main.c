@@ -6,21 +6,18 @@
 volatile sig_atomic_t count = 0;
 volatile sig_atomic_t quit = 0;
 
-void sigint_handler(int sig)
-{
+void sigint_handler(int sig) {
     (void)sig;
     count++;
     write(STDOUT_FILENO, "\a", 1);
 }
 
-void sigquit_handler(int sig)
-{
+void sigquit_handler(int sig) {
     (void)sig;
     quit = 1;
 }
 
-int main(void)
-{
+int main(void) {
     struct sigaction sa_int = {0};
     struct sigaction sa_quit = {0};
 
@@ -44,7 +41,7 @@ int main(void)
         pause();
     }
 
-    printf("\Signal sound: %d times\n", (int)count);
+    printf("\nSignal sound: %d times\n", (int)count);
 
     return 0;
 }
