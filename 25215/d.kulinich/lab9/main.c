@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -11,7 +10,7 @@ int main(void) {
 
     if (pid == -1) {
         perror("fork failed");
-        exit(1);
+        return 1;
     }
 
     if (pid == 0) {
@@ -19,13 +18,12 @@ int main(void) {
         execlp("cat", "cat", "long_file.txt", NULL);
         
         perror("exec failed");
-        exit(1);
+        return 1;
     } else {
-        int status;
         
-        if (waitpid(pid, &status, 0) == -1) {
+        if (waitpid(pid, NULL, 0) == -1) {
             perror("waitpid failed");
-            exit(1);
+            return 1;
         }
 
         printf("\nChild process complete work!\n");
