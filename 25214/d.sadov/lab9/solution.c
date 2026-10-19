@@ -32,8 +32,6 @@ int main() {
         }
 
         printf("\nParent: child process has finished.\n");
-
-        printf("Parent: final string printed after child process finished.\n");
     }
     return 0;
 }
