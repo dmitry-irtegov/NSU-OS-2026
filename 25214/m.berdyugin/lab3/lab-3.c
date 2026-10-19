@@ -4,7 +4,7 @@ cat > lab-3.c << 'EOF'
 #include <stdio.h>
 
 
-#define FILENAME "/home/students/25200/m.berdyugin/NSU-OS-2026/25214/m.berdyugin/lab3"
+#define FILENAME "data3.txt"
 
 
 void print_ids_and_open() {
