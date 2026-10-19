@@ -23,18 +23,15 @@ int main() {
     } else {
         printf("Parent: child process has been launched.\n");
         fflush(stdout);
-        int status;
 
-        pid_t waited_pid = waitpid(pid, &status, 0);
+        pid_t waited_pid = waitpid(pid, NULL, 0);
 
         if (waited_pid == -1) {
             perror("waitpid failed");
             exit(EXIT_FAILURE);
         }
 
-        if (WIFEXITED(status)) {
-            printf("\nParent: child has finished with code status: %d.\n", WEXITSTATUS(status));
-        }
+        printf("\nParent: child process has finished.\n");
 
         printf("Parent: final string printed after child process finished.\n");
     }
