@@ -7,6 +7,8 @@ int main()
 {
     pid_t pid;
 
+    printf("Родитель\n");
+
     pid = fork();
 
     if (pid == -1) {
@@ -20,7 +22,6 @@ int main()
         exit(1);
     }
 
-    printf("Родитель\n");
     waitpid(pid, NULL, 0);
     printf("Конец\n");
 
