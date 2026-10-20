@@ -5,7 +5,7 @@ int countOfBell = 0;
 int quitflag = 0;
 void signalINTreg(int sig){
         (void) sig;
-        printf("\a");
+        write(1,"\a",1);
         countOfBell +=1;
         signal(SIGINT, signalINTreg);
 
