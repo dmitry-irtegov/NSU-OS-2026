@@ -9,7 +9,7 @@ int main()
     time_t now;
     struct tm *sp;
 
-    setenv("TZ=PST8PDT");
+    setenv("TZ", "PST8PDT", 1);
 
     (void)time(&now);
 
