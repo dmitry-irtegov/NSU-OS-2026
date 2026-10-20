@@ -28,7 +28,7 @@ int main() {
         close(pipefd[0]);
 
         char message[BUF_LIM];
-        printf("[parent]: type a message to be uppercased:\n");
+        printf("[parent] type a message to be uppercased:\n");
         
         if (fgets(message, sizeof(message), stdin) != NULL) {
             size_t len = strlen(message);
@@ -52,6 +52,7 @@ int main() {
             for (int i = 0; buffer[i] != '\0'; i++) {
                 buffer[i] = toupper((unsigned char)buffer[i]);
             }
+
             printf("[child] uppercased text is:\n%s\n", buffer);
         }
 
