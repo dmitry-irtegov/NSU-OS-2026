@@ -1,0 +1,7 @@
+lab*/build/
+
+lab*/app
+
+.vscode/
+.idea/
+test.c
