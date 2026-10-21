@@ -18,18 +18,14 @@ int main(int argc, char **argv)
 
     if (offset == NULL || length == NULL) {
         printf("Memory allocation error\n");
-        free(offset);
-        free(length);
-        return 1;
+        exit(1);
     }
 
     int fd = open(argv[1], O_RDONLY);
 
     if (fd == -1) {
         printf("Error opening file\n");
-        free(offset);
-        free(length);
-        return 1;
+        exit(1);
     }
 
     offset[0] = 0;
@@ -45,8 +41,7 @@ int main(int argc, char **argv)
 
                 if (offset == NULL || length == NULL) {
                     printf("Memory allocation error\n");
-                    close(fd);
-                    return 1;
+                    exit(1);
                 }
             }
 
@@ -64,6 +59,10 @@ int main(int argc, char **argv)
             capacity *= 2;
             offset = realloc(offset, capacity * sizeof(long));
             length = realloc(length, capacity * sizeof(long));
+            if (offset == NULL || length == NULL) {
+                    printf("Memory allocation error\n");
+                    exit(1);
+                }
         }
 
         length[lines] = pos - start;
@@ -95,7 +94,7 @@ int main(int argc, char **argv)
 
         if (buf == NULL) {
             printf("Memory allocation error\n");
-            break;
+            exit(1);
         }
 
         while (total < len) {
