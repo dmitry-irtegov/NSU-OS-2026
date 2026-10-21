@@ -5,9 +5,8 @@
 #define MAX_LINES 1000
 #define MAX_LEN 1000
 
-int main(void)
+int main(int argc, char **argv)
 {
-    int fd;
     char c;
     int n;
     int lines = 0;
@@ -18,7 +17,8 @@ int main(void)
     long start = 0;
     long pos;
 
-    fd = open("text.txt", O_RDONLY);
+    int fd = open(argv[1], O_RDONLY);
+    if (fd == -1) 
 
     if (fd == -1) {
         printf("Error opening file\n");
