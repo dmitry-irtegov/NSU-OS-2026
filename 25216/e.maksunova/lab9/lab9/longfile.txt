@@ -1,0 +1,18 @@
+## START ##
+
+
+###########
+
+That's what you have done, it's working. 
+You end up with two processes, and both the parent and child are printing at the same time 
+(likely on two different cores too) so it gets mixed together weirdly like that.
+
+You're creating pipes, which would allow you to communicate with the parent, but you're 
+not overwriting stdin/stdout, so those still go to the same stdin/stdout as the parent 
+as part of the same process group. 
+When you fork, you inherit all the file descriptors too, that's why you open the pipes before forking, 
+and then the child inherit those and you can use one side in the child and the other in the parent.
+
+If you want to redirect stdout to the parent, 
+you probably want to dup2(p1[0], 0) and dup2(p2[1], 1) and then 
+you can use p1[1] to send stuff to the child's stdin and p2[0] to read from the child's stdout.
