@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <errno.h>
+
+extern char **environ;
+
+int execvpe(const char *file, char *const argv[], char *const envp[]) {
+    if (strchr(file, '/') != NULL) {
+        return execve(file, argv, envp);
+    }
+
+    const char *path = NULL;
+    for (char *const *e = envp; e && *e; e++) {
+        if (strncmp(*e, "PATH=", 5) == 0) {
+            path = *e + 5;
+            break;
+        }
+    }
+
+    if (!path) {
+        path = getenv("PATH");
+    }
+
+    if (!path) {
+        path = "/bin:/usr/bin";
+    }
+
+    char *path_copy = strdup(path);
+
+    if (!path_copy) {
+        errno = ENOMEM; // недостаточно памяти
+        return -1;
+    }
+
+    char *dir = strtok(path_copy, ":");
+    int last_errno = ENOENT; // файл отсутствует
+    
+    while (dir != NULL) {
+        int len = strlen(dir) + strlen(file) + 2;
+        char *full_path = malloc(len);
+
+        if (!full_path) {
+            free(path_copy);
+            errno = ENOMEM;
+            return -1;
+        }
+
+        snprintf(full_path, len, "%s/%s", dir, file);
+        
+        execve(full_path, argv, envp);
+        
+        free(full_path);
+
+        if (errno != ENOENT && errno != ENOTDIR) {
+            last_errno = errno;
+        }
+
+        dir = strtok(NULL, ":");
+    }
+
+    free(path_copy);
+    errno = last_errno;
+    return -1;
+}
+
+int main(void) {
+    // Аргументы для запускаемой программы (например, ls -l)
+    char *argv[] = { "ls", "-l", NULL };
+
+    // Кастомное окружение с вашим PATH
+    char *envp[] = { 
+        "PATH=/usr/local/bin:/usr/bin:/bin", 
+        "USER=testuser", 
+        NULL 
+    };
+
+    printf("Попытка запуска программы через execvpe...\n");
+
+    // Вызываем вашу функцию
+    execvpe("ls", argv, envp);
+
+    // Если мы оказались ЗДЕСЬ — значит execvpe вернул -1 и произошла ошибка
+    perror("Ошибка выполнения execvpe");
+    return 1;
+}
