@@ -5,10 +5,11 @@
 
 int main() {
     char* args[] = {"sh", "-c", "cat file.txt", NULL};
+    char* envp[] = {NULL};
 
     pid_t pid = fork();
     if (pid == 0) {
-        int ret = execve("/bin/sh", args, NULL);
+        int ret = execve("/bin/sh", args, envp);
         if (ret == -1) {
             perror("exec failed");
             exit(1);
