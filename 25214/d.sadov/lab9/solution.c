@@ -13,6 +13,8 @@ int main() {
     pid_t pid = fork();
 
     if (pid == 0) {
+        printf("Child: child process has been launched.\n");
+        fflush(stdout);
         execl("/bin/cat", "cat", fileName, (char *)NULL);
 
         perror("execl failed");
@@ -21,9 +23,6 @@ int main() {
         perror("fork failed");
         exit(EXIT_FAILURE);
     } else {
-        printf("Parent: child process has been launched.\n");
-        fflush(stdout);
-
         pid_t waited_pid = waitpid(pid, NULL, 0);
 
         if (waited_pid == -1) {
