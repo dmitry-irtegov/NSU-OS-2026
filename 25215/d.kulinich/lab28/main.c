@@ -15,15 +15,15 @@ int main(void) {
     }
 
     for (int i = 0; i < 100; i++)
-        fprintf(fp[1], "%d\n", rand() % 100);
+        fprintf(fp[0], "%d\n", rand() % 100);
 
-    fclose(fp[1]);
+    fclose(fp[0]);
 
     printf("--- Sorted nums ---\n");
 
     int num;
     int count = 0;
-    while (fscanf(fp[0], "%d", &num) == 1) {
+    while (fscanf(fp[1], "%d", &num) == 1) {
         printf("%2d ", num);
         count++;
         if (count % 10 == 0) {
