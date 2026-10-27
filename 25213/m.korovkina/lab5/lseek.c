@@ -95,7 +95,7 @@ int main(int argc, char* argv[]) {
             break;
         }
         if (res == 0) {
-            scanf("%*[^\n]%*c");
+            scanf("%*[^\n]");
             continue;
         }
         if (line_index == 0) {
