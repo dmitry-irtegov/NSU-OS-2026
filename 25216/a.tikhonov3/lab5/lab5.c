@@ -30,25 +30,30 @@ int main(int argc, char **argv)
 
     offset[0] = 0;
 
-    while (read(fd, &c, 1) == 1) {
-        if (c == '\n') {
-            pos = lseek(fd, 0L, SEEK_CUR);
+    char buf[1024];
+    ssize_t bytes_read;
 
-            if (lines == capacity) {
-                capacity *= 2;
-                offset = realloc(offset, capacity * sizeof(long));
-                length = realloc(length, capacity * sizeof(long));
+    while ((bytes_read = read(fd, buf, sizeof(buf))) > 0) {
+        for (int i = 0; i < bytes_read; i++) {
+            if (buf[i] == '\n') {
+                pos = lseek(fd, 0L, SEEK_CUR) - (bytes_read - i - 1);
 
-                if (offset == NULL || length == NULL) {
-                    printf("Memory allocation error\n");
-                    exit(1);
+                if (lines == capacity) {
+                    capacity *= 2;
+                    offset = realloc(offset, capacity * sizeof(long));
+                    length = realloc(length, capacity * sizeof(long));
+
+                    if (offset == NULL || length == NULL) {
+                        printf("Memory allocation error\n");
+                        exit(1);
+                    }
                 }
-            }
 
-            length[lines] = pos - start - 1;
-            lines++;
-            offset[lines] = pos;
-            start = pos;
+                length[lines] = pos - start - 1;
+                lines++;
+                offset[lines] = pos;
+                start = pos;
+            }
         }
     }
 
