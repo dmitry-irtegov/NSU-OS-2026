@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <ctype.h>
 #include <string.h>
 #include <sys/wait.h>
 
 int main(void) {
+
     int fd[2];
     pid_t pid;
 
@@ -18,6 +18,8 @@ int main(void) {
 
     if (pid == -1) {
         perror("fork");
+        close(fd[0]);
+        close(fd[1]);
         return 1;
     }
 
@@ -27,6 +29,7 @@ int main(void) {
         const char *text = "Text from child";
         if (write(fd[1], text, strlen(text)) == -1) {
             perror("write");
+            close(fd[1]);
             return 1;
         }
 
@@ -38,21 +41,32 @@ int main(void) {
 
     char buf[128]; 
     ssize_t n; 
+
     while((n = read(fd[0], buf, sizeof(buf) - 1)) > 0) {
         buf[n] = '\0';
         
         for(int i = 0; i < n; i++) {
-            buf[i] = toupper((unsigned char)buf[i]);
+            buf[i] = (char)toupper((unsigned char)buf[i]);
         }
-        printf("%s", buf);
+        
+        if (fputs(buf, stdout) == EOF) {
+            perror("fputs");
+            close(fd[0]);
+            return 1;
+        }
     }
 
     if (n == -1) {
         perror("read"); 
+        close(fd[0]);
         return 1;
     }
 
-    printf("\n");
+    if (putchar('\n') == EOF) {
+        perror("putchar");
+        close(fd[0]);
+        return 1;
+    }
 
     close(fd[0]);
     if (waitpid(pid, NULL, 0) == -1) {
