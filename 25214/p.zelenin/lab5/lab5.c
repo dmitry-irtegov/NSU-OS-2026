@@ -55,6 +55,10 @@ int main(int argc, char* argv[]) {
         int line;
         if (scanf("%d", &line) != 1) {
             printf("Could not read the number of the line\n");
+            int c;
+            while ((c = getchar()) != '\n') {
+                continue;
+            }
             continue;
         }
 
