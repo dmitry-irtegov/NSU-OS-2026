@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
     printf("%s", ctime(&now));
 
-    setenv("TZ", zone, 1);
+//    setenv("TZ", zone, 1);
     tzset();
 
     sp = localtime(&now);
