@@ -5,6 +5,7 @@
 #include <sys/wait.h>
 
 int main() {
+    printf("Parent process started\n");
     pid_t pid = fork();
 
     if (pid == -1) {
@@ -15,8 +16,6 @@ int main() {
         perror("execlp");
         exit(1);
     } else {
-        printf("Parent process started\n");
-
         if (waitpid(pid, NULL, 0) == -1) {
             perror("waitpid");
             return 1;
