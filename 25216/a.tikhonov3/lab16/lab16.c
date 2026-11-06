@@ -29,10 +29,8 @@ int main(void)
     printf("Продолжить выполнение? [y/n]: ");
     fflush(stdout);
 
-    do {
-        bytes_read = read(STDIN_FILENO, &answer, 1);
-    } while (bytes_read == -1 && errno == EINTR);
-    
+    bytes_read = read(STDIN_FILENO, &answer, 1);
+
     if (tcsetattr(STDIN_FILENO, TCSANOW, &old_term) == -1) {
         perror("tcsetattr (restore)");
         return EXIT_FAILURE;
@@ -44,7 +42,13 @@ int main(void)
         return EXIT_FAILURE;
     }
 
-    printf("\nВы нажали: %c\n", answer);
+    if (answer == 'y' || answer == 'Y') {
+        printf("\nВы нажали 'y' :)\n");
+    } else if (answer == 'n' || answer == 'N') {
+        printf("\nВы нажали 'n' :(\n");
+    } else {
+        printf("\nНеизвестный символ '%c' — ожидалось 'y' или 'n'.\n", answer);
+    }
 
     return EXIT_SUCCESS;
 }
