@@ -11,7 +11,8 @@ void timeout_handler(int sig)
     char buf[1024];
     ssize_t bytes_read;
 
-    printf("\nTime is over! File contents:\n");
+    static const char msg[] = "\nTime is over! File contents:\n";
+    write(STDOUT_FILENO, msg, sizeof(msg) - 1);
 
     lseek(fd, 0, SEEK_SET);
 
@@ -20,7 +21,7 @@ void timeout_handler(int sig)
     }
 
     close(fd);
-    exit(0);
+    _exit(0);
 }
 
 int main(int argc, char **argv)
@@ -68,7 +69,7 @@ int main(int argc, char **argv)
                     capacity *= 2;
 
                     long *new_offset =
-                        realloc(offset, capacity * sizeof(long));
+                        realloc(offset, (capacity + 1) * sizeof(long));
                     long *new_length =
                         realloc(length, capacity * sizeof(long));
 
@@ -96,7 +97,7 @@ int main(int argc, char **argv)
             capacity *= 2;
 
             long *new_offset =
-                realloc(offset, capacity * sizeof(long));
+                realloc(offset, (capacity + 1) * sizeof(long));
             long *new_length =
                 realloc(length, capacity * sizeof(long));
 
