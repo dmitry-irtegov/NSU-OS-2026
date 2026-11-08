@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/wait.h>
 #define MAX_MSG_SIZE 50
 int main() {
     static char text[] = "This is another task!";
