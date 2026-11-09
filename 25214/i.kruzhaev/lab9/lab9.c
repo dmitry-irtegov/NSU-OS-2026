@@ -10,14 +10,14 @@ int main(int argc, char *argv[ ]) {
     int i;
 
     if ((pid = fork()) > 0) {
-        // if (waitpid(pid, NULL, 0) == -1) {
-        //     perror("child process failed");
-        //     exit(1);
-        // }
-
+        if (waitpid(pid, NULL, 0) == -1) {
+                perror("child process failed");
+                exit(1);
+            }
+        
         printf("\n Какой-либо текст.\n");
     } else if (pid == 0) {
-        execl("/bin/cat", "cat", "pushkin-skazki.txt", (char*) 0);
+        execl("/bin/cat", "cat", "long-file.txt", (char*) 0);
 
         perror("exec cat failed");
         exit(1);
