@@ -22,8 +22,7 @@ int main(){
         signal(SIGINT, signalINTreg);
         signal(SIGQUIT, signalOUTreg);
         while(!quitflag){
-
-        //todo
+                sleep(3);
         }
     printf("%d",countOfBell);
     return 0;
