@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <errno.h>
 
 extern char **environ;
 
@@ -11,9 +10,7 @@ int execvpe(const char *file, char *const argv[], char *const envp[]) {
 
     execvp(file, argv); 
 
-    int saved_errno = errno;
     environ = saved_environ;
-    errno = saved_errno;
     
     return -1;
 }
