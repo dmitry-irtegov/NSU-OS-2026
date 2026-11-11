@@ -123,6 +123,7 @@ int main(int argc, char **argv)
 
     while (1) {
         printf("Enter line number (0 - exit): ");
+        fflush(stdout);
 
         alarm(5);
 
