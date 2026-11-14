@@ -20,12 +20,13 @@ char* to_uppercase(char *array, int length) {
 int main() {
     int descriptors[2];
     int ret = pipe(descriptors);
-
-    pid_t pid = fork();
     if (ret == -1) {
         perror("Failed to open the pipe");
         exit(1);
     }
+
+
+    pid_t pid = fork();
 
 
     if (pid == 0) {
@@ -41,14 +42,14 @@ int main() {
         int bytes_to_write = strnlen(string, N) + 1;
         int bytes_written = 0;
         do {
-            bytes_written = write(descriptors[1], string, strnlen(string, N) + 1);
+            bytes_written = write(descriptors[1], offset, strnlen(string, N) + 1);
+            if (bytes_written == -1) {
+                perror("Write to the pipe failed");
+                exit(1);
+            }
             offset += bytes_written;
             bytes_to_write -= bytes_written;
-        } while (bytes_to_write > 0 && bytes_written != -1);
-        if (bytes_written == -1) {
-            perror("Write to the pipe failed");
-            exit(1);
-        }
+        } while (bytes_to_write > 0);
 
 
         ret = close(descriptors[1]);
@@ -69,9 +70,9 @@ int main() {
         }
 
 
-        char buffer[N];
+        char buffer[N] = {};
         char* offset = buffer;
-        ret = waitpid(-1, NULL, 0);
+        // ret = waitpid(-1, NULL, 0);
         if (ret == -1) {
             perror("waitpid failed");
             exit(1);
@@ -82,13 +83,13 @@ int main() {
         int left_to_read = N;
         do {
             bytes_obtained = read(descriptors[0], offset, left_to_read);
+            if (bytes_obtained == -1) {
+                perror("Error when reading from the pipe");
+                exit(1);
+            }
             offset += bytes_obtained;
             left_to_read -= bytes_obtained;
-        } while (bytes_obtained != 0 && left_to_read > 0 && bytes_obtained != -1);
-        if (bytes_obtained == -1) {
-            perror("Error when reading from the pipe");
-            exit(1);
-        }
+        } while (bytes_obtained != 0 && left_to_read > 0);
 
 
         ret = printf(
@@ -101,7 +102,7 @@ int main() {
         }
 
 
-        close(descriptors[0]);
+        ret = close(descriptors[0]);
         if (ret == -1) {
             perror("Closing the pipe read descriptor failed");
             exit(1);
