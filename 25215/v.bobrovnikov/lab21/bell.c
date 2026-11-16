@@ -22,7 +22,7 @@ int main(){
         signal(SIGINT, signalINTreg);
         signal(SIGQUIT, signalOUTreg);
         while(!quitflag){
-                sleep(3);
+                pause();
         }
     printf("%d",countOfBell);
     return 0;
