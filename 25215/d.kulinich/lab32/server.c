@@ -143,7 +143,7 @@ int main(void) {
     }
 
 
-    
+
     while (!quit_flag) {
         if (!got_sigio && !quit_flag) {
             sigsuspend(&empty_mask);
@@ -161,6 +161,20 @@ int main(void) {
                 }
                 perror("accept");
                 break;
+            }
+
+            // on Solaris socket inherits O_NONBLOCK
+            // we should reset it manually
+            int client_flags = fcntl(client_fd, F_GETFL, 0);
+            if (client_flags == -1) {
+                perror("fcntl F_GETFL client");
+                close(client_fd);
+                continue;
+            }
+            if (fcntl(client_fd, F_SETFL, client_flags & ~O_NONBLOCK) == -1) {
+                perror("fcntl F_SETFL client");
+                close(client_fd);
+                continue;
             }
 
             struct client_ctx *new_client = calloc(1, sizeof(*new_client));
@@ -221,7 +235,7 @@ int main(void) {
             free(client);
         }
     }
-    
+
     while (clients_head != NULL) {
         struct client_ctx *next = clients_head->next;
         aio_cancel(clients_head->fd, &clients_head->cb);
