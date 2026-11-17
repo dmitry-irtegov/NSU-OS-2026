@@ -7,12 +7,12 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <aio.h>
-#include <stropts.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-#include <sys/filio.h>
 #include <sys/ioctl.h>
+#include <sys/filio.h>
+#include <stropts.h>
 
 #define SOCKET_PATH "/tmp/task32.sock"
 #define BUFFER_SIZE 4096
@@ -52,6 +52,8 @@ int write_all(int fd, const char *buf, size_t len) {
 
 // subscribe to AIO
 int start_client_aio(struct client_ctx *client) {
+    memset(&client->cb, 0, sizeof client->cb);
+
     client->cb.aio_fildes = client->fd;
     client->cb.aio_buf = client->buffer;
     client->cb.aio_nbytes = sizeof client->buffer;
@@ -59,7 +61,6 @@ int start_client_aio(struct client_ctx *client) {
 
     client->cb.aio_sigevent.sigev_notify = SIGEV_SIGNAL;
     client->cb.aio_sigevent.sigev_signo = SIGIO;
-    client->cb.aio_sigevent.sigev_value.sival_ptr = client;
 
     return aio_read(&client->cb);
 }
