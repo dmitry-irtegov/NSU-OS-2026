@@ -36,8 +36,13 @@ int main(int argc, char *argv[]) {
         int c;
 
         while ((c = fgetc(in)) != EOF) {
-            putchar(toupper(c));
+            if (putchar(toupper(c)) == EOF) {
+                perror("putchar failed");
+                fclose(in);
+                _exit(EXIT_FAILURE);
+            }
         }
+
         putchar('\n');
 
         fclose(in);
