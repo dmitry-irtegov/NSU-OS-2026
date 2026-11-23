@@ -1,0 +1,6 @@
+first stroke
+second stroke
+третья строка
+
+пятая stroke
+    строка с отступом
