@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
             if (putchar(toupper(c)) == EOF) {
                 perror("putchar failed");
                 fclose(in);
-                _exit(EXIT_FAILURE);
+                exit(EXIT_FAILURE);
             }
         }
 
