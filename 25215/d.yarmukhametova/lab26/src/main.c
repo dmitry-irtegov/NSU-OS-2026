@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/wait.h>
 
 int main(void) {
     const char *string = "Hello World\n";
@@ -16,9 +17,17 @@ int main(void) {
         exit(EXIT_FAILURE);
     }
 
-    if (pclose(fp) == -1) {
+    int status = pclose(fp);
+
+    if (status == -1) {
         perror("pclose");
         exit(EXIT_FAILURE);
+    }
+
+    if (WIFEXITED(status)) {
+        printf("tr finished with code: %d\n", WEXITSTATUS(status));
+        } else if (WIFSIGNALED(status)) {
+        printf("tr terminated by signal: %d\n", WTERMSIG(status));
     }
 
     return 0;
