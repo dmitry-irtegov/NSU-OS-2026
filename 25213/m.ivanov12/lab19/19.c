@@ -1,5 +1,5 @@
-
-#define _POSIX_C_SOURCE 200809L
+#define _FILE_OFFSET_BITS 64
+#define __EXTENSIONS__
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,32 +8,29 @@
 #include <errno.h>
 
 int match(const char *pattern, const char *filename) {
-    if (*pattern == '\0') {
-        return *filename == '\0';
-    }
+    const char *star = NULL;
+    const char *retry = NULL;
 
-    if (*pattern == '*') {
-        if (match(pattern + 1, filename)) {
-            return 1;
-        }
-        if (*filename != '\0') {
-            return match(pattern, filename + 1);
-        }
-        return 0;
-    }
-
-    if (*pattern == '?') {
-        if (*filename == '\0') {
+    while (*filename != '\0') {
+        if (*pattern == *filename || *pattern == '?') {
+            pattern++;
+            filename++;
+        } else if (*pattern == '*') {
+            star = pattern++;
+            retry = filename;
+        } else if (star != NULL) {
+            pattern = star + 1;
+            filename = ++retry;
+        } else {
             return 0;
         }
-        return match(pattern + 1, filename + 1);
     }
 
-    if (*filename != '\0' && *pattern == *filename) {
-        return match(pattern + 1, filename + 1);
+    while (*pattern == '*') {
+        pattern++;
     }
 
-    return 0;
+    return *pattern == '\0';
 }
 
 int main(void) {
@@ -41,7 +38,7 @@ int main(void) {
     size_t capacity = 0;
     ssize_t length;
 
-    printf("Введите шаблон имени файла: ");
+    fprintf(stderr, "Введите шаблон имени файла: ");
     if (fflush(stdout) == EOF) {
         perror("fflush");
         return 1;
@@ -49,6 +46,11 @@ int main(void) {
 
     length = getline(&pattern, &capacity, stdin);
     if (length == -1) {
+        if (ferror(stdin)) {
+            perror("getline");
+        } else {
+            fprintf(stderr, "Не введён шаблон.\n");
+        }
         free(pattern);
         return 1;
     }
@@ -58,7 +60,7 @@ int main(void) {
     }
 
     if (strchr(pattern, '/') != NULL) {
-        printf("Ошибка: символ '/' не может встречаться в шаблоне.\n");
+        fprintf(stderr, "Ошибка: символ '/' не может встречаться в шаблоне.\n");
         free(pattern);
         return 1;
     }
