@@ -12,12 +12,13 @@ int match(const char *pattern, const char *filename) {
     const char *retry = NULL;
 
     while (*filename != '\0') {
-        if (*pattern == *filename || *pattern == '?') {
-            pattern++;
-            filename++;
-        } else if (*pattern == '*') {
+        if (*pattern == '*') {
             star = pattern++;
             retry = filename;
+        }
+        else if (*pattern == '?' || *pattern == *filename) {
+            pattern++;
+            filename++;
         } else if (star != NULL) {
             pattern = star + 1;
             filename = ++retry;
@@ -38,7 +39,11 @@ int main(void) {
     size_t capacity = 0;
     ssize_t length;
 
-    fprintf(stderr, "Введите шаблон имени файла: ");
+    if (fprintf(stdout, "Введите шаблон имени файла: ") < 0) {
+        perror("fprintf");
+        return 1;
+    }
+
     if (fflush(stdout) == EOF) {
         perror("fflush");
         return 1;
@@ -51,6 +56,12 @@ int main(void) {
         } else {
             fprintf(stderr, "Не введён шаблон.\n");
         }
+        free(pattern);
+        return 1;
+    }
+
+    if (memchr(pattern, '\0', (size_t)length) != NULL) {
+        fprintf(stderr, "Ошибка: нулевой байт в шаблоне.\n");
         free(pattern);
         return 1;
     }
