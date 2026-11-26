@@ -25,8 +25,7 @@ int main() {
     addr.sun_family = AF_UNIX;
     strcpy(addr.sun_path, SOCKET_PATH);
 
-    if (connect(sock_fd, (struct sockaddr *)&addr,
-                sizeof(addr)) == -1) {
+    if (connect(sock_fd, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
         perror("connect");
         close(sock_fd);
         exit(EXIT_FAILURE);
